@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace SS
 {
@@ -23,8 +24,36 @@ namespace SS
         [SerializeField]
         Canvas[] m_CanvasArray;
 
+        [SerializeField]
+        EventSystem m_EventSystem;
+
         int m_FrameCounter;
         State m_State;
+        bool m_CreatedShields;
+
+        void Awake()
+        {
+            if (Application.isPlaying)
+            {
+                SceneManager.OnLoaded(m_Controller);
+            }
+        }
+
+        public void DestroyEventSystem()
+        {
+            if (m_EventSystem != null)
+            {
+                Destroy(m_EventSystem.gameObject);
+            }
+        }
+
+        public void ActiveEventSystem(bool active)
+        {
+            if (m_EventSystem != null)
+            {
+                m_EventSystem.enabled = active;
+            }
+        }
 
         public void Show(bool hasAnimation)
         {
@@ -58,24 +87,31 @@ namespace SS
             ResortCanvasList(min);
         }
 
-        void Awake()
-        {
-            if (Application.isPlaying)
-            {
-                SceneManager.OnLoaded(m_Controller);
-            }
-        }
-
         public void CreateShields()
         {
-            for (int i = 0; i < m_CanvasArray.Length; i++)
+            if (!m_CreatedShields)
             {
-                GameObject g = Instantiate(Resources.Load("Shield")) as GameObject;
-                Transform t = g.transform;
+                for (int i = 0; i < m_CanvasArray.Length; i++)
+                {
+                    GameObject g = new GameObject("Shield");
 
-                t.SetParent(m_CanvasArray[i].transform);
-                t.SetSiblingIndex(0);
-                t.localScale = Vector3.one;
+                    Image image = g.AddComponent<Image>();
+                    image.color = SceneManager.ShieldColor;
+
+                    Transform t = g.transform;
+                    t.SetParent(m_CanvasArray[i].transform);
+                    t.SetSiblingIndex(0);
+                    t.localScale = Vector3.one;
+
+                    RectTransform rt = t.GetComponent<RectTransform>();
+                    rt.anchorMin = Vector2.zero;
+                    rt.anchorMax = Vector2.one;
+                    rt.pivot = new Vector2(0.5f, 0.5f);
+                    rt.anchoredPosition = Vector2.zero;
+                    rt.sizeDelta = Vector2.zero;
+                }
+
+                m_CreatedShields = true;
             }
         }
 
@@ -148,6 +184,7 @@ namespace SS
             {
                 SetSupporter();
                 FindCanvases();
+                FindEventSystem();
             }
         }
 
@@ -174,6 +211,12 @@ namespace SS
             }
 
             m_CanvasArray = canvasTempList.ToArray();
+        }
+
+        void FindEventSystem()
+        {
+            m_EventSystem = FindObjectOfType<EventSystem>();
+            ActiveEventSystem(false);
         }
         #else
         void Update()

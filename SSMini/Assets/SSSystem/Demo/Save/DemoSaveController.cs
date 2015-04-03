@@ -1,12 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 using SS;
+using UnityEngine.UI;
 
 public class DemoSaveController : Controller
 {
+    [SerializeField]
+    Image m_PhotoImage;
+
+    DemoGameData m_GameData;
+
     public override string SceneName()
     {
         return "DemoSave";
+    }
+
+    public override void OnActive(Data data)
+    {
+        if (data != null)
+        {
+            m_GameData = (DemoGameData)data;
+            Texture2D texture = m_GameData.ScreenCapture;
+
+            m_PhotoImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        }
     }
 
     public void OnCloseButtonTap()
@@ -16,6 +33,6 @@ public class DemoSaveController : Controller
 
     public void OnShareButtonTap()
     {
-        SceneManager.Popup("DemoShare", true);
+        SceneManager.FullScreenView("DemoShare", true);
     }
 }

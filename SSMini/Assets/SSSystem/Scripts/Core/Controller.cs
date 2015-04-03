@@ -79,6 +79,12 @@ namespace SS
             }
         }
 
+        public SceneData SceneData
+        {
+            get;
+            set;
+        }
+
         protected void SendOnShown(Data data)
         {
             if (data != null && !string.IsNullOrEmpty(data.OnShownFunctionName))

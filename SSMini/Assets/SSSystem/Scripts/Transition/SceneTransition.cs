@@ -43,8 +43,16 @@ namespace SS
         {
             if (this != null)
             {
-                Active = true;
-                m_ShieldAnimation.Play(m_FadeInAnimName);
+                if (SceneManager.SceneFadeTime == 0)
+                {
+                    ShieldOff();
+                }
+                else
+                {
+                    Active = true;
+                    m_ShieldAnimation[m_FadeInAnimName].speed = 1f / SceneManager.SceneFadeTime;
+                    m_ShieldAnimation.Play(m_FadeInAnimName);
+                }
             }
         }
 
@@ -53,8 +61,17 @@ namespace SS
         {
             if (this != null)
             {
-                Active = true;
-                m_ShieldAnimation.Play(m_FadeOutAnimName);
+                if (SceneManager.SceneFadeTime == 0)
+                {
+                    ShieldOn();
+                    OnFadedOut();
+                }
+                else
+                {
+                    Active = true;
+                    m_ShieldAnimation[m_FadeOutAnimName].speed = 1f / SceneManager.SceneFadeTime;
+                    m_ShieldAnimation.Play(m_FadeOutAnimName);
+                }
             }
         }
 
