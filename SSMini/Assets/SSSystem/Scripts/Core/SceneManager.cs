@@ -8,7 +8,8 @@ namespace SS
         DEFAULT,
         SCENE,
         POPUP,
-        FULL_SCREEN,
+        VIEW,
+        VIEW_FULL_SCREEN,
         LOADING,
         TAB
     }
@@ -86,9 +87,10 @@ namespace SS
             AddView(sceneName, SceneType.POPUP, PopupPosition,  m_Stack.Count * 10 + 60, hasAnimation, data);
         }
 
-        public static void FullScreenView(string sceneName, bool hasAnimation = false, Data data = null)
+        public static void View(string sceneName, bool fullScreen = false, bool hasAnimation = false, Data data = null)
         {
-            AddView(sceneName, SceneType.FULL_SCREEN, FullScreenPosition, m_Stack.Count * 10, hasAnimation, data);
+            SceneType sceneType = (fullScreen) ? SceneType.VIEW_FULL_SCREEN : SceneType.VIEW;
+            AddView(sceneName, sceneType, FullScreenPosition, m_Stack.Count * 10, hasAnimation, data);
         }
 
         public static string LoadingSceneName
@@ -311,7 +313,10 @@ namespace SS
                     controller.Supporter.CreateShields();
                     controller.Supporter.DestroyEventSystem();
                     break;
-                case SceneType.FULL_SCREEN:
+                case SceneType.VIEW:
+                    controller.Supporter.DestroyEventSystem();
+                    break;
+                case SceneType.VIEW_FULL_SCREEN:
                     controller.Supporter.DestroyEventSystem();
                     break;
                 case SceneType.LOADING:
@@ -335,7 +340,7 @@ namespace SS
         {
             switch (controller.SceneData.SceneType)
             {
-                case SceneType.FULL_SCREEN:
+                case SceneType.VIEW_FULL_SCREEN:
                     if (m_Stack.Count > 1)
                     {
                         m_Stack.Pop();
@@ -353,7 +358,7 @@ namespace SS
         {
             switch (controller.SceneData.SceneType)
             {
-                case SceneType.FULL_SCREEN:
+                case SceneType.VIEW_FULL_SCREEN:
                     if (m_Stack.Count > 0)
                     {
                         Controller topController = m_Stack.Peek();

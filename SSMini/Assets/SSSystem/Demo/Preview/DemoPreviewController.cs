@@ -3,7 +3,7 @@ using System.Collections;
 using SS;
 using UnityEngine.UI;
 
-public class DemoSaveController : Controller
+public class DemoPreviewController : Controller
 {
     [SerializeField]
     Image m_PhotoImage;
@@ -12,7 +12,7 @@ public class DemoSaveController : Controller
 
     public override string SceneName()
     {
-        return "DemoSave";
+        return "DemoPreview";
     }
 
     public override void OnActive(Data data)
@@ -33,6 +33,6 @@ public class DemoSaveController : Controller
 
     public void OnShareButtonTap()
     {
-        SceneManager.FullScreenView("DemoShare", true);
+        SceneManager.View("DemoShare", true, true);
     }
 }

@@ -72,7 +72,7 @@ public class DemoGameController : Controller
         SceneManager.Loading(false);
 
         // Load save view
-        SceneManager.FullScreenView("DemoSave", true, data);
+        SceneManager.View("DemoPreview", true, true, data);
     }
 
     void SetDataTexture(Texture2D texture)
