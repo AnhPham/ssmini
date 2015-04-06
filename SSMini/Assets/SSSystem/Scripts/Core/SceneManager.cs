@@ -7,6 +7,7 @@ namespace SS
     {
         DEFAULT,
         SCENE,
+        SCENE_CLEAR_ALL,
         POPUP,
         VIEW,
         VIEW_FULL_SCREEN,
@@ -40,6 +41,7 @@ namespace SS
         static Dictionary<string, SceneData> m_Command = new Dictionary<string, SceneData>();
         static Stack<Controller> m_Stack = new Stack<Controller>();
         static SceneTransition m_SceneTransition;
+        static Controller m_CurrentSceneController;
 
         static Controller m_LoadingController;
         static bool m_LoadingActive;
@@ -60,9 +62,16 @@ namespace SS
             ShieldColor = new Color(1, 1, 1, 0.5f);
 
             SceneFadeTime = 0.5f;
+            SceneAnimationTime = 0.283f;
         }
 
         public static Color ShieldColor
+        {
+            get;
+            set;
+        }
+
+        public static float SceneAnimationTime
         {
             get;
             set;
@@ -74,12 +83,35 @@ namespace SS
             set;
         }
 
-        public static void Scene(string sceneName)
+        public static void Scene(string sceneName, bool clearAll)
         {
-            Clear();
-            
-            AddCommand(sceneName, new SceneData(SceneType.SCENE, ScenePosition, null, false, 0, true));
-            m_SceneTransition.LoadScene(sceneName);
+            if (clearAll)
+            {
+                Clear();
+                AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, null, false, 0, true));
+                m_SceneTransition.LoadScene(sceneName);
+            }
+            else
+            {
+                if (m_CurrentSceneController == null || sceneName.CompareTo(m_CurrentSceneController.SceneName()) != 0)
+                {
+                    m_SceneTransition.ShieldOn();
+                    AddCommand(sceneName, new SceneData(SceneType.SCENE, ScenePosition, null, false, 0, true));
+
+                    if (m_Scenes.ContainsKey(sceneName))
+                    {
+                        ExcuteCommand(sceneName);
+                    }
+                    else
+                    {
+                        Application.LoadLevelAdditive(sceneName);
+                    }
+                }
+                else
+                {
+                    BackToScene(true);
+                }
+            }
         }
 
         public static void Popup(string sceneName, bool hasAnimation = false, Data data = null)
@@ -90,7 +122,7 @@ namespace SS
         public static void View(string sceneName, bool fullScreen = false, bool hasAnimation = false, Data data = null)
         {
             SceneType sceneType = (fullScreen) ? SceneType.VIEW_FULL_SCREEN : SceneType.VIEW;
-            AddView(sceneName, sceneType, FullScreenPosition, m_Stack.Count * 10, hasAnimation, data);
+            AddView(sceneName, sceneType, ViewPosition, m_Stack.Count * 10, hasAnimation, data);
         }
 
         public static string LoadingSceneName
@@ -137,6 +169,24 @@ namespace SS
             }
         }
 
+        public static void BackToScene(bool hasAnimation = false)
+        {
+            if (m_Stack.Count > 1)
+            {
+                Controller topController = m_Stack.Pop();
+
+                while (m_Stack.Count > 1)
+                {
+                    Controller controller = m_Stack.Pop();
+                    controller.Supporter.Hide(hasAnimation);
+                }
+
+                m_Stack.Push(topController);
+
+                Close(hasAnimation);
+            }
+        }
+
         public static Controller Top()
         {
             if (m_Stack.Count > 0)
@@ -157,8 +207,13 @@ namespace SS
 
         public static void OnShown(Controller controller)
         {
-            m_SceneTransition.ShieldOff();
+            if (controller.SceneData.SceneType != SceneType.SCENE_CLEAR_ALL)
+            {
+                m_SceneTransition.ShieldOff();
+            }
+
             controller.OnShown();
+            controller.Supporter.OnShown();
 
             DeactivePrevSceneOnShown(controller);
         }
@@ -166,11 +221,17 @@ namespace SS
         public static void OnHidden(Controller controller)
         {
             m_SceneTransition.ShieldOff();
+
+            LostFocusAndRaiseHidden(controller);
+            ActiveTopSceneOnHidden(controller);
+        }
+
+        static void LostFocusAndRaiseHidden(Controller controller)
+        {
             controller.OnFocus(false);
             controller.gameObject.SetActive(false);
             controller.OnHidden();
-
-            ActiveTopSceneOnHidden(controller);
+            controller.Supporter.OnHidden();
         }
 
         public static bool ActiveShield()
@@ -232,7 +293,7 @@ namespace SS
             get { return Vector3.zero; }
         }
 
-        static Vector3 FullScreenPosition
+        static Vector3 ViewPosition
         {
             get { return Vector3.zero; }
         }
@@ -293,6 +354,7 @@ namespace SS
             controller.SceneData = sceneData;
             controller.transform.position = sceneData.Position;
             controller.OnActive(sceneData.Data);
+            controller.Supporter.OnActive(sceneData.Data);
             controller.OnFocus(true);
             controller.Supporter.ResortDepth(sceneData.MinDepth);
             controller.Supporter.Show(sceneData.HasAnimation);
@@ -304,9 +366,16 @@ namespace SS
             {
                 case SceneType.DEFAULT:
                     controller.Supporter.ActiveEventSystem(true);
+                    m_CurrentSceneController = controller;
                     break;
                 case SceneType.SCENE:
+                    controller.Supporter.DestroyEventSystem();
+                    controller.Supporter.ReplaceEventSystem(m_CurrentSceneController);
+                    m_CurrentSceneController = controller;
+                    break;
+                case SceneType.SCENE_CLEAR_ALL:
                     m_SceneTransition.FadeInScene();
+                    m_CurrentSceneController = controller;
                     controller.Supporter.ActiveEventSystem(true);
                     break;
                 case SceneType.POPUP:
@@ -340,6 +409,20 @@ namespace SS
         {
             switch (controller.SceneData.SceneType)
             {
+                case SceneType.SCENE:
+                    if (m_Stack.Count > 1)
+                    {
+                        m_Stack.Pop();
+
+                        while (m_Stack.Count > 0)
+                        {
+                            Controller prevController = m_Stack.Pop();
+                            prevController.gameObject.SetActive(false);
+                        }
+
+                        m_Stack.Push(controller);
+                    }
+                    break;
                 case SceneType.VIEW_FULL_SCREEN:
                     if (m_Stack.Count > 1)
                     {

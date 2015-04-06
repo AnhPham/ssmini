@@ -24,12 +24,10 @@ namespace SS
         #region SerializeField
         [SerializeField]
         AnimationDirection m_AnimationDirection = AnimationDirection.FROM_RIGHT;
-
-        [SerializeField]
-        float m_AnimationTime = 0.283f;
         #endregion
 
         #region Private Variable
+        float m_AnimationTime;
         Vector2 m_Start;
         Vector2 m_End;
         RectTransform m_RectTransform;
@@ -37,6 +35,18 @@ namespace SS
         State m_State = State.IDLE;
         float m_StartTime;
         #endregion
+
+        void Awake()
+        {
+            if (SceneManager.SceneAnimationTime > 0)
+            {
+                m_AnimationTime = SceneManager.SceneAnimationTime;
+            }
+            else
+            {
+                m_AnimationTime = 0.283f;
+            }
+        }
 
         RectTransform RectTransform
         {

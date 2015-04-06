@@ -10,9 +10,19 @@ namespace SS
 
     public class Data
     {
-        public GameObject Target;
-        public string OnShownFunctionName;
-        public string OnHiddenFunctionName;
+        public delegate void CallbackDelegate(Controller controller);
+        public CallbackDelegate OnShown;
+        public CallbackDelegate OnHidden;
+
+        public Data()
+        {
+        }
+
+        public Data(CallbackDelegate onShown, CallbackDelegate onHidden)
+        {
+            OnShown = onShown;
+            OnHidden = onHidden;
+        }
     }
 
     [RequireComponent(typeof(ControllerSupporter))]
@@ -83,22 +93,6 @@ namespace SS
         {
             get;
             set;
-        }
-
-        protected void SendOnShown(Data data)
-        {
-            if (data != null && !string.IsNullOrEmpty(data.OnShownFunctionName))
-            {
-                data.Target.SendMessage(data.OnShownFunctionName);
-            }
-        }
-
-        protected void SendOnHidden(Data data)
-        {
-            if (data != null && !string.IsNullOrEmpty(data.OnHiddenFunctionName))
-            {
-                data.Target.SendMessage(data.OnHiddenFunctionName);
-            }
         }
     }
 }

@@ -28,8 +28,9 @@ namespace SS
         EventSystem m_EventSystem;
 
         int m_FrameCounter;
-        State m_State;
         bool m_CreatedShields;
+        State m_State;
+        Data m_Data;
 
         void Awake()
         {
@@ -37,6 +38,11 @@ namespace SS
             {
                 SceneManager.OnLoaded(m_Controller);
             }
+        }
+
+        public virtual void OnActive(Data data)
+        {
+            m_Data = data;
         }
 
         public void DestroyEventSystem()
@@ -52,6 +58,20 @@ namespace SS
             if (m_EventSystem != null)
             {
                 m_EventSystem.enabled = active;
+
+                if (active)
+                {
+                    m_EventSystem.transform.parent = null;
+                }
+            }
+        }
+
+        public void ReplaceEventSystem(Controller controller)
+        {
+            if (controller != null)
+            {
+                m_EventSystem = controller.Supporter.m_EventSystem;
+                controller.Supporter.m_EventSystem = null;
             }
         }
 
@@ -79,6 +99,22 @@ namespace SS
             else
             {
                 m_Controller.Hide(false);
+            }
+        }
+
+        public void OnShown()
+        {
+            if (m_Data != null && m_Data.OnShown != null)
+            {
+                m_Data.OnShown(m_Controller);
+            }
+        }
+
+        public void OnHidden()
+        {
+            if (m_Data != null && m_Data.OnHidden != null)
+            {
+                m_Data.OnHidden(m_Controller);
             }
         }
 

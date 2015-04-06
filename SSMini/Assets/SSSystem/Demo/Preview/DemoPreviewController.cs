@@ -19,6 +19,8 @@ public class DemoPreviewController : Controller
     {
         if (data != null)
         {
+            m_PhotoImage.GetComponent<AspectRatioFitter>().aspectRatio = (float)Screen.width / Screen.height;
+
             m_GameData = (DemoGameData)data;
             Texture2D texture = m_GameData.ScreenCapture;
 

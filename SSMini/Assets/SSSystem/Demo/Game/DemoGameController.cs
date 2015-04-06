@@ -21,6 +21,7 @@ public class DemoGameController : Controller
     {
         SceneManager.ShieldColor = new Color(0, 0, 0, 0.8f);
         SceneManager.SceneFadeTime = 0.25f;
+        SceneManager.SceneAnimationTime = 0.283f;
         SceneManager.LoadingSceneName = "DemoLoading";
         SceneManager.TabSceneName = "DemoTab";
         SceneManager.Tab(true);
@@ -43,6 +44,7 @@ public class DemoGameController : Controller
 
         // Set its position same camera position
         g.SetActive(true);
+        g.transform.parent = m_BulletPrefab.transform.parent;
         g.transform.position = Camera.main.transform.position;
 
         // Add force to bullet

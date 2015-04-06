@@ -24,6 +24,15 @@ namespace SS
             }
         }
 
+        void Awake()
+        {
+            if (SceneManager.SceneAnimationTime > 0)
+            {
+                Animation[m_ShowAnimName].speed = Animation[m_ShowAnimName].length / SceneManager.SceneAnimationTime;
+                Animation[m_HideAnimName].speed = Animation[m_HideAnimName].length / SceneManager.SceneAnimationTime;
+            }
+        }
+
         public override void HideBeforeShowing()
         {
             Animation.Play(m_ShowAnimName);
