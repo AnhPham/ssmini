@@ -20,7 +20,6 @@ namespace SS
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            FadeInScene();
         }
 
 		public void ShieldOff()
@@ -49,9 +48,12 @@ namespace SS
                 }
                 else
                 {
+                    
                     Active = true;
                     m_ShieldAnimation[m_FadeInAnimName].speed = 1f / SceneManager.SceneFadeTime;
                     m_ShieldAnimation.Play(m_FadeInAnimName);
+                    m_ShieldAnimation[m_FadeInAnimName].time = 0;
+                    m_ShieldAnimation.Sample();
                 }
             }
         }

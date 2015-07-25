@@ -11,12 +11,23 @@ public class DemoTabController : Controller
 
     void Awake()
     {
+        SetPrefix();
+    }
+
+    void SetPrefix()
+    {
         m_Prefix = (m_DemoClear) ? "_Clear" : string.Empty;
     }
 
     public override string SceneName()
     {
         return "DemoTab";
+    }
+
+    public bool isDemoClear
+    {
+        get { return m_DemoClear; }
+        set { m_DemoClear = value; SetPrefix(); }
     }
 
     public void OnButton1Tap()

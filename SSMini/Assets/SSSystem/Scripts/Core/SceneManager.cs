@@ -49,6 +49,8 @@ namespace SS
         static Controller m_TabController;
         static bool m_TabActive;
 
+        static string m_CurrentSceneName;
+
         static SceneManager()
         {
             Application.targetFrameRate = 60;
@@ -111,6 +113,22 @@ namespace SS
                 {
                     BackToScene(true);
                 }
+            }
+        }
+
+        public static void Reset()
+        {
+            if (!string.IsNullOrEmpty(m_CurrentSceneName))
+            {
+                Scene(m_CurrentSceneName, true);
+            }
+        }
+
+        public static string CurrentSceneName
+        {
+            get
+            {
+                return m_CurrentSceneName;
             }
         }
 
@@ -198,10 +216,15 @@ namespace SS
 
         public static void OnLoaded(Controller controller)
         {
+            m_Scenes.Add(controller.SceneName(), controller);
+            foreach (var scene in m_Scenes)
+            {
+                scene.Value.OnAnySceneLoaded(controller);
+            }
+
             Resources.UnloadUnusedAssets();
             System.GC.Collect();
 
-            m_Scenes.Add(controller.SceneName(), controller);
             ExcuteCommand(controller.SceneName());
         }
 
@@ -365,17 +388,21 @@ namespace SS
             switch (sceneType)
             {
                 case SceneType.DEFAULT:
+                    m_SceneTransition.FadeInScene();
                     controller.Supporter.ActiveEventSystem(true);
                     m_CurrentSceneController = controller;
+                    m_CurrentSceneName = controller.SceneName();
                     break;
                 case SceneType.SCENE:
                     controller.Supporter.DestroyEventSystem();
                     controller.Supporter.ReplaceEventSystem(m_CurrentSceneController);
                     m_CurrentSceneController = controller;
+                    m_CurrentSceneName = controller.SceneName();
                     break;
                 case SceneType.SCENE_CLEAR_ALL:
                     m_SceneTransition.FadeInScene();
                     m_CurrentSceneController = controller;
+                    m_CurrentSceneName = controller.SceneName();
                     controller.Supporter.ActiveEventSystem(true);
                     break;
                 case SceneType.POPUP:

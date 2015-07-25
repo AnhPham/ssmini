@@ -16,9 +16,12 @@ public class DemoGameController : Controller
     Transform m_Target;
 
     DemoGameData data = new DemoGameData();
+    bool isDemoClear;
 
     void Awake()
     {
+        isDemoClear = Application.loadedLevelName.Contains("Clear");
+
         SceneManager.ShieldColor = new Color(0, 0, 0, 0.8f);
         SceneManager.SceneFadeTime = 0.25f;
         SceneManager.SceneAnimationTime = 0.283f;
@@ -35,6 +38,14 @@ public class DemoGameController : Controller
     public override string SceneName()
     {
         return gameObject.name;
+    }
+
+    public override void OnAnySceneLoaded(Controller controller)
+    {
+        if (controller.SceneName().CompareTo("DemoTab") == 0)
+        {
+            ((DemoTabController)controller).isDemoClear = isDemoClear;
+        }
     }
 
     public void OnAttackButtonTap()

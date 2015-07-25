@@ -57,6 +57,10 @@ namespace SS
             SceneManager.Close(true);
         }
 
+        public virtual void OnAnySceneLoaded(Controller controller)
+        {
+        }
+
         public virtual void Show(bool hasAnimation)
         {
             if (Animation != null)
