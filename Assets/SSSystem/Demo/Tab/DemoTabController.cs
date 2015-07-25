@@ -4,15 +4,8 @@ using SS;
 
 public class DemoTabController : Controller
 {
-    [SerializeField]
     bool m_DemoClear;
-
     string m_Prefix;
-
-    void Awake()
-    {
-        SetPrefix();
-    }
 
     void SetPrefix()
     {
