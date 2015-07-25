@@ -89,6 +89,7 @@ namespace SS
         {
             if (clearAll)
             {
+                HideAll();
                 Clear();
                 AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, null, false, 0, true));
                 m_SceneTransition.LoadScene(sceneName, clearAll);
@@ -206,12 +207,21 @@ namespace SS
                 while (m_Stack.Count > 1)
                 {
                     Controller controller = m_Stack.Pop();
-                    controller.Supporter.Hide(hasAnimation);
+                    controller.Supporter.Hide(false);
                 }
 
                 m_Stack.Push(topController);
 
                 Close(hasAnimation);
+            }
+        }
+
+        public static void HideAll()
+        {
+            while (m_Stack.Count > 0)
+            {
+                Controller controller = m_Stack.Pop();
+                controller.Supporter.Hide(false);
             }
         }
 
@@ -457,7 +467,7 @@ namespace SS
                         while (m_Stack.Count > 0)
                         {
                             Controller prevController = m_Stack.Pop();
-                            prevController.gameObject.SetActive(false);
+                            prevController.Hide(false);
                         }
 
                         m_Stack.Push(controller);
@@ -469,7 +479,7 @@ namespace SS
                         m_Stack.Pop();
 
                         Controller prevController = m_Stack.Peek();
-                        prevController.gameObject.SetActive(false);
+                        prevController.Hide(false);
 
                         m_Stack.Push(controller);
                     }

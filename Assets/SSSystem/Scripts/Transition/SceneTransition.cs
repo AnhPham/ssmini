@@ -5,6 +5,15 @@ namespace SS
 {
     public class SceneTransition : MonoBehaviour
     {
+        enum State
+        {
+            SHIELD_OFF,
+            SHIELD_ON,
+            SHIELD_FADE_IN,
+            SHIELD_FADE_OUT,
+            SCENE_LOADING
+        }
+
         [SerializeField]
         Animation m_ShieldAnimation;
 
@@ -18,6 +27,8 @@ namespace SS
         bool m_ClearAll;
         bool m_Active;
 
+        State m_State;
+
         void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -25,17 +36,25 @@ namespace SS
 
 		public void ShieldOff()
 		{
-			Active = false;
+            if (m_State == State.SHIELD_ON)
+            {
+                m_State = State.SHIELD_OFF;
+                Active = false;
+            }
 		}
 
 		public void ShieldOn()
 		{
-			Active = true;
+            if (m_State == State.SHIELD_OFF)
+            {
+                m_State = State.SHIELD_ON;
+                Active = true;
 
-			m_ShieldAnimation[m_FadeOutAnimName].time = 0;
-			m_ShieldAnimation.Play(m_FadeOutAnimName);
-			m_ShieldAnimation.Sample();
-			m_ShieldAnimation.Stop();
+                m_ShieldAnimation[m_FadeOutAnimName].time = 0;
+                m_ShieldAnimation.Play(m_FadeOutAnimName);
+                m_ShieldAnimation.Sample();
+                m_ShieldAnimation.Stop();
+            }
 		}
 
         // Scene gradually appear
@@ -54,6 +73,8 @@ namespace SS
                     m_ShieldAnimation.Play(m_FadeInAnimName);
                     m_ShieldAnimation[m_FadeInAnimName].time = 0;
                     m_ShieldAnimation.Sample();
+
+                    m_State = State.SHIELD_FADE_IN;
                 }
             }
         }
@@ -73,6 +94,8 @@ namespace SS
                     Active = true;
                     m_ShieldAnimation[m_FadeOutAnimName].speed = 1f / SceneManager.SceneFadeTime;
                     m_ShieldAnimation.Play(m_FadeOutAnimName);
+
+                    m_State = State.SHIELD_FADE_OUT;
                 }
             }
         }
@@ -89,12 +112,14 @@ namespace SS
         {
             if (this != null)
             {
+                m_State = State.SHIELD_OFF;
                 Active = false;
             }
         }
 
         public void OnFadedOut()
         {
+            m_State = State.SCENE_LOADING;
             SceneManager.LoadLevel(m_NextSceneName, m_ClearAll);
         }
 
