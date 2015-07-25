@@ -15,6 +15,7 @@ namespace SS
         string m_FadeOutAnimName = "FadeOut";
 
         string m_NextSceneName;
+        bool m_ClearAll;
         bool m_Active;
 
         void Awake()
@@ -48,7 +49,6 @@ namespace SS
                 }
                 else
                 {
-                    
                     Active = true;
                     m_ShieldAnimation[m_FadeInAnimName].speed = 1f / SceneManager.SceneFadeTime;
                     m_ShieldAnimation.Play(m_FadeInAnimName);
@@ -77,9 +77,11 @@ namespace SS
             }
         }
 
-        public void LoadScene(string sceneName)
+        public void LoadScene(string sceneName, bool clearAll)
         {
             m_NextSceneName = sceneName;
+            m_ClearAll = clearAll;
+
             FadeOutScene();
         }
 
@@ -93,7 +95,7 @@ namespace SS
 
         public void OnFadedOut()
         {
-            Application.LoadLevel(m_NextSceneName);
+            SceneManager.LoadLevel(m_NextSceneName, m_ClearAll);
         }
 
         public bool Active

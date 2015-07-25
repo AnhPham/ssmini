@@ -23,7 +23,7 @@ public class DemoGameController : Controller
         isDemoClear = Application.loadedLevelName.Contains("Clear");
 
         SceneManager.ShieldColor = new Color(0, 0, 0, 0.8f);
-        SceneManager.SceneFadeTime = 0.25f;
+        SceneManager.SceneFadeTime = 0.5f;
         SceneManager.SceneAnimationTime = 0.283f;
         SceneManager.LoadingSceneName = "DemoLoading";
         SceneManager.TabSceneName = "DemoTab";

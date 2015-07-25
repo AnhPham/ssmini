@@ -91,27 +91,37 @@ namespace SS
             {
                 Clear();
                 AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, null, false, 0, true));
-                m_SceneTransition.LoadScene(sceneName);
+                m_SceneTransition.LoadScene(sceneName, clearAll);
             }
             else
             {
                 if (m_CurrentSceneController == null || sceneName.CompareTo(m_CurrentSceneController.SceneName()) != 0)
                 {
-                    m_SceneTransition.ShieldOn();
                     AddCommand(sceneName, new SceneData(SceneType.SCENE, ScenePosition, null, false, 0, true));
-
-                    if (m_Scenes.ContainsKey(sceneName))
-                    {
-                        ExcuteCommand(sceneName);
-                    }
-                    else
-                    {
-                        Application.LoadLevelAdditive(sceneName);
-                    }
+                    m_SceneTransition.LoadScene(sceneName, clearAll);
                 }
                 else
                 {
                     BackToScene(true);
+                }
+            }
+        }
+
+        public static void LoadLevel(string sceneName, bool clearAll)
+        {
+            if (clearAll)
+            {
+                Application.LoadLevel(sceneName);
+            }
+            else
+            {
+                if (m_Scenes.ContainsKey(sceneName))
+                {
+                    ExcuteCommand(sceneName);
+                }
+                else
+                {
+                    Application.LoadLevelAdditive(sceneName);
                 }
             }
         }
@@ -230,9 +240,13 @@ namespace SS
 
         public static void OnShown(Controller controller)
         {
-            if (controller.SceneData.SceneType != SceneType.SCENE_CLEAR_ALL)
+            switch (controller.SceneData.SceneType)
             {
-                m_SceneTransition.ShieldOff();
+                case SceneType.POPUP:
+                case SceneType.VIEW:
+                case SceneType.VIEW_FULL_SCREEN:
+                    m_SceneTransition.ShieldOff();
+                    break;
             }
 
             controller.OnShown();
@@ -266,8 +280,6 @@ namespace SS
         {
             if (controller == null)
             {
-                m_SceneTransition.ShieldOn();
-
                 AddCommand(sceneName, new SceneData(sceneType, position, null, false, minDepth, false));
                 Application.LoadLevelAdditive(sceneName);
             }
@@ -394,6 +406,7 @@ namespace SS
                     m_CurrentSceneName = controller.SceneName();
                     break;
                 case SceneType.SCENE:
+                    m_SceneTransition.FadeInScene();
                     controller.Supporter.DestroyEventSystem();
                     controller.Supporter.ReplaceEventSystem(m_CurrentSceneController);
                     m_CurrentSceneController = controller;
