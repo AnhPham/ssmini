@@ -235,7 +235,7 @@ namespace SS
             while (m_Stack.Count > 0)
             {
                 Controller controller = m_Stack.Pop();
-                controller.Supporter.Hide(false);
+                LostFocusAndRaiseHidden(controller);
             }
         }
 
@@ -405,6 +405,11 @@ namespace SS
                 ExcuteController(controller, new SceneData());
                 ExcuteSceneType(controller, SceneType.DEFAULT);
             }
+
+            foreach (var scene in m_Scenes)
+            {
+                scene.Value.OnAnySceneActivated(controller);
+            }
         }
 
         static void ExcutePushStack(Controller controller, bool inStack)
@@ -425,10 +430,6 @@ namespace SS
             controller.SceneData = sceneData;
             controller.transform.position = sceneData.Position;
             controller.Supporter.OnActive(sceneData.Data);
-            foreach (var scene in m_Scenes)
-            {
-                scene.Value.OnAnySceneActivated(controller);
-            }
             controller.OnFocus(true);
             controller.Supporter.ResortDepth(sceneData.MinDepth);
             controller.Supporter.Show(sceneData.HasAnimation);
@@ -525,16 +526,17 @@ namespace SS
 
         static void ActiveTopSceneOnHidden(Controller controller)
         {
-            switch (controller.SceneData.SceneType)
+            if (m_Stack.Count > 0)
             {
-                case SceneType.VIEW_FULL_SCREEN:
-                    if (m_Stack.Count > 0)
-                    {
-                        Controller topController = m_Stack.Peek();
-                        topController.OnFocus(true);
+                Controller topController = m_Stack.Peek();
+                topController.OnFocus(true);
+
+                switch (controller.SceneData.SceneType)
+                {
+                    case SceneType.VIEW_FULL_SCREEN:
                         topController.Supporter.OnShown();
-                    }
-                    break;
+                        break;
+                }
             }
         }
     }

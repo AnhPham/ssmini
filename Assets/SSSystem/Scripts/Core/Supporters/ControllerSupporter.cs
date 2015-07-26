@@ -162,7 +162,10 @@ namespace SS
 
             for (int i = 0; i < m_CanvasArray.Length; i++)
             {
-                m_CanvasArray[i].sortingOrder = min + i;
+                if (m_CanvasArray[i] != null)
+                {
+                    m_CanvasArray[i].sortingOrder = min + i;
+                }
             }
         }
 
