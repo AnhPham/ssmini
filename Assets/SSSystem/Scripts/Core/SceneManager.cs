@@ -89,8 +89,6 @@ namespace SS
         {
             if (clearAll)
             {
-                HideAll();
-                Clear();
                 AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, null, false, 0, true));
                 m_SceneTransition.LoadScene(sceneName, clearAll);
             }
@@ -108,10 +106,22 @@ namespace SS
             }
         }
 
-        public static void LoadLevel(string sceneName, bool clearAll)
+        public static void OnFadedIn(string sceneName)
+        {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                sceneName = m_CurrentSceneName;
+            }
+            Controller controller = m_Scenes[sceneName];
+            controller.Supporter.OnShown();
+        }
+
+        public static void OnFadedOut(string sceneName, bool clearAll)
         {
             if (clearAll)
             {
+                HideAll();
+                Clear();
                 Application.LoadLevel(sceneName);
             }
             else
@@ -189,11 +199,15 @@ namespace SS
                 Controller controller = m_Stack.Pop();
                 controller.Supporter.Hide(hasAnimation);
 
-                if (m_Stack.Count > 0)
+                switch (controller.SceneData.SceneType)
                 {
-                    controller = m_Stack.Peek();
-                    controller.gameObject.SetActive(true);
-                    controller.OnFocus(true);
+                    case SceneType.VIEW_FULL_SCREEN:
+                        if (m_Stack.Count > 0)
+                        {
+                            Controller topController = m_Stack.Peek();
+                            topController.gameObject.SetActive(true);
+                        }
+                        break;
                 }
             }
         }
@@ -207,7 +221,7 @@ namespace SS
                 while (m_Stack.Count > 1)
                 {
                     Controller controller = m_Stack.Pop();
-                    controller.Supporter.Hide(false);
+                    LostFocusAndRaiseHidden(controller);
                 }
 
                 m_Stack.Push(topController);
@@ -259,10 +273,16 @@ namespace SS
                     break;
             }
 
-            controller.OnShown();
-            controller.Supporter.OnShown();
-
-            DeactivePrevSceneOnShown(controller);
+            switch (controller.SceneData.SceneType)
+            {
+                case SceneType.DEFAULT:
+                case SceneType.SCENE:
+                case SceneType.SCENE_CLEAR_ALL:
+                    break;
+                default:
+                    RaiseShownAndDeactivePrevScenes(controller);
+                    break;
+            }
         }
 
         public static void OnHidden(Controller controller)
@@ -273,11 +293,17 @@ namespace SS
             ActiveTopSceneOnHidden(controller);
         }
 
+        static void RaiseShownAndDeactivePrevScenes(Controller controller)
+        {
+            controller.Supporter.OnShown();
+
+            DeactivePrevSceneOnShown(controller);
+        }
+
         static void LostFocusAndRaiseHidden(Controller controller)
         {
             controller.OnFocus(false);
             controller.gameObject.SetActive(false);
-            controller.OnHidden();
             controller.Supporter.OnHidden();
         }
 
@@ -398,8 +424,11 @@ namespace SS
         {
             controller.SceneData = sceneData;
             controller.transform.position = sceneData.Position;
-            controller.OnActive(sceneData.Data);
             controller.Supporter.OnActive(sceneData.Data);
+            foreach (var scene in m_Scenes)
+            {
+                scene.Value.OnAnySceneActivated(controller);
+            }
             controller.OnFocus(true);
             controller.Supporter.ResortDepth(sceneData.MinDepth);
             controller.Supporter.Show(sceneData.HasAnimation);
@@ -421,6 +450,7 @@ namespace SS
                     controller.Supporter.ReplaceEventSystem(m_CurrentSceneController);
                     m_CurrentSceneController = controller;
                     m_CurrentSceneName = controller.SceneName();
+                    DeactivePrevSceneOnShown(controller);
                     break;
                 case SceneType.SCENE_CLEAR_ALL:
                     m_SceneTransition.FadeInScene();
@@ -467,7 +497,7 @@ namespace SS
                         while (m_Stack.Count > 0)
                         {
                             Controller prevController = m_Stack.Pop();
-                            prevController.Hide(false);
+                            DeactiveRaiseHidden(prevController);
                         }
 
                         m_Stack.Push(controller);
@@ -479,12 +509,18 @@ namespace SS
                         m_Stack.Pop();
 
                         Controller prevController = m_Stack.Peek();
-                        prevController.Hide(false);
+                        DeactiveRaiseHidden(prevController);
 
                         m_Stack.Push(controller);
                     }
                     break;
             }
+        }
+
+        static void DeactiveRaiseHidden(Controller controller)
+        {
+            controller.gameObject.SetActive(false);
+            controller.Supporter.OnHidden();
         }
 
         static void ActiveTopSceneOnHidden(Controller controller)
@@ -495,7 +531,8 @@ namespace SS
                     if (m_Stack.Count > 0)
                     {
                         Controller topController = m_Stack.Peek();
-                        topController.gameObject.SetActive(true);
+                        topController.OnFocus(true);
+                        topController.Supporter.OnShown();
                     }
                     break;
             }

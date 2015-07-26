@@ -61,6 +61,10 @@ namespace SS
         {
         }
 
+        public virtual void OnAnySceneActivated(Controller controller)
+        {
+        }
+
         public virtual void Show(bool hasAnimation)
         {
             if (Animation != null)

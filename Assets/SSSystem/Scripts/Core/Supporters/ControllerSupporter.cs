@@ -42,6 +42,7 @@ namespace SS
 
         public virtual void OnActive(Data data)
         {
+            m_Controller.OnActive(data);
             m_Data = data;
         }
 
@@ -104,6 +105,8 @@ namespace SS
 
         public void OnShown()
         {
+            m_Controller.OnShown();
+
             if (m_Data != null && m_Data.OnShown != null)
             {
                 m_Data.OnShown(m_Controller);
@@ -112,6 +115,8 @@ namespace SS
 
         public void OnHidden()
         {
+            m_Controller.OnHidden();
+
             if (m_Data != null && m_Data.OnHidden != null)
             {
                 m_Data.OnHidden(m_Controller);

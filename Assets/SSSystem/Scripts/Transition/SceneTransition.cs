@@ -23,7 +23,7 @@ namespace SS
         [SerializeField]
         string m_FadeOutAnimName = "FadeOut";
 
-        string m_NextSceneName;
+        string m_SceneName;
         bool m_ClearAll;
         bool m_Active;
 
@@ -102,7 +102,7 @@ namespace SS
 
         public void LoadScene(string sceneName, bool clearAll)
         {
-            m_NextSceneName = sceneName;
+            m_SceneName = sceneName;
             m_ClearAll = clearAll;
 
             FadeOutScene();
@@ -114,13 +114,14 @@ namespace SS
             {
                 m_State = State.SHIELD_OFF;
                 Active = false;
+                SceneManager.OnFadedIn(m_SceneName);
             }
         }
 
         public void OnFadedOut()
         {
             m_State = State.SCENE_LOADING;
-            SceneManager.LoadLevel(m_NextSceneName, m_ClearAll);
+            SceneManager.OnFadedOut(m_SceneName, m_ClearAll);
         }
 
         public bool Active
