@@ -303,6 +303,15 @@ namespace SS
             }
         }
 
+        public static void AddAudioListener()
+        {
+            AudioListener al = m_SceneSupporter.GetComponent<AudioListener>();
+            if (al == null)
+            {
+                m_SceneSupporter.gameObject.AddComponent<AudioListener>();
+            }
+        }
+
         static void RaiseShownAndDeactivePrevScenes(Controller controller)
         {
             controller.Supporter.OnShown();
