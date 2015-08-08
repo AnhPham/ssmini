@@ -7,6 +7,7 @@ namespace SS
     {
         void Awake()
         {
+            gameObject.AddComponent<AudioListener>();
             DontDestroyOnLoad(gameObject);
         }
 

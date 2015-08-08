@@ -41,6 +41,7 @@ namespace SS
         static Dictionary<string, SceneData> m_Command = new Dictionary<string, SceneData>();
         static Stack<Controller> m_Stack = new Stack<Controller>();
         static SceneTransition m_SceneTransition;
+        static SceneManagerSupporter m_SceneSupporter;
         static Controller m_CurrentSceneController;
 
         static Controller m_LoadingController;
@@ -59,7 +60,7 @@ namespace SS
             m_SceneTransition = ((GameObject)GameObject.Instantiate(sceneTransition)).GetComponent<SceneTransition>();
 
             GameObject sceneSupporter = new GameObject("SceneManagerSupporter");
-            sceneSupporter.AddComponent<SceneManagerSupporter>();
+            m_SceneSupporter = sceneSupporter.AddComponent<SceneManagerSupporter>();
 
             ShieldColor = new Color(1, 1, 1, 0.5f);
 
@@ -291,6 +292,15 @@ namespace SS
 
             LostFocusAndRaiseHidden(controller);
             ActiveTopSceneOnHidden(controller);
+        }
+
+        public static void RemoveAudioListener()
+        {
+            AudioListener al = m_SceneSupporter.GetComponent<AudioListener>();
+            if (al != null)
+            {
+                Component.Destroy(al);
+            }
         }
 
         static void RaiseShownAndDeactivePrevScenes(Controller controller)
