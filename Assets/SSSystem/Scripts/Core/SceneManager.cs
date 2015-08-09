@@ -296,6 +296,9 @@ namespace SS
 
         public static void RemoveAudioListener()
         {
+            if (m_SceneSupporter == null)
+                return;
+            
             AudioListener al = m_SceneSupporter.GetComponent<AudioListener>();
             if (al != null)
             {
@@ -305,6 +308,9 @@ namespace SS
 
         public static void AddAudioListener()
         {
+            if (m_SceneSupporter == null)
+                return;
+            
             AudioListener al = m_SceneSupporter.GetComponent<AudioListener>();
             if (al == null)
             {
