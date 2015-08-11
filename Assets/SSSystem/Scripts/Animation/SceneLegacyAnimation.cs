@@ -59,10 +59,7 @@ namespace SS
                 Animation[m_ShowAnimName].time = Animation[m_ShowAnimName].length;
                 Animation.Sample();
 
-                if (Time.timeScale == 0)
-                {
-                    OnShown();
-                }
+                OnShown();
             }
             else
             {
@@ -78,10 +75,7 @@ namespace SS
                 Animation[m_HideAnimName].time = Animation[m_HideAnimName].length;
                 Animation.Sample();
 
-                if (Time.timeScale == 0)
-                {
-                    OnHidden();
-                }
+                OnHidden();
             }
             else
             {
@@ -119,16 +113,13 @@ namespace SS
                     m_CurrState.enabled = false;
                     m_IsPlaying = false;
 
-                    if (Time.timeScale == 0)
+                    if (m_CurrClipName == m_ShowAnimName)
                     {
-                        if (m_CurrClipName == m_ShowAnimName)
-                        {
-                            OnShown();
-                        }
-                        else if (m_CurrClipName == m_HideAnimName)
-                        {
-                            OnHidden();
-                        }
+                        OnShown();
+                    }
+                    else if (m_CurrClipName == m_HideAnimName)
+                    {
+                        OnHidden();
                     }
 
                     return;
