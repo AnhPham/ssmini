@@ -62,7 +62,7 @@ namespace SS
             GameObject sceneSupporter = new GameObject("SceneManagerSupporter");
             m_SceneSupporter = sceneSupporter.AddComponent<SceneManagerSupporter>();
 
-            ShieldColor = new Color(1, 1, 1, 0.5f);
+            ShieldColor = new Color(0.235f, 0.235f, 0.235f, 0.5f);
 
             SceneFadeTime = 0.5f;
             SceneAnimationTime = 0.283f;
