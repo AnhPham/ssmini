@@ -86,18 +86,18 @@ namespace SS
             set;
         }
 
-        public static void Scene(string sceneName, bool clearAll)
+        public static void Scene(string sceneName, bool clearAll, Data data = null)
         {
             if (clearAll)
             {
-                AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, null, false, 0, true));
+                AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, data, false, 0, true));
                 m_SceneTransition.LoadScene(sceneName, clearAll);
             }
             else
             {
                 if (m_CurrentSceneController == null || sceneName.CompareTo(m_CurrentSceneController.SceneName()) != 0)
                 {
-                    AddCommand(sceneName, new SceneData(SceneType.SCENE, ScenePosition, null, false, 0, true));
+                    AddCommand(sceneName, new SceneData(SceneType.SCENE, ScenePosition, data, false, 0, true));
                     m_SceneTransition.LoadScene(sceneName, clearAll);
                 }
                 else
@@ -138,11 +138,11 @@ namespace SS
             }
         }
 
-        public static void Reset()
+        public static void Reset(Data data = null)
         {
             if (!string.IsNullOrEmpty(m_CurrentSceneName))
             {
-                Scene(m_CurrentSceneName, true);
+                Scene(m_CurrentSceneName, true, data);
             }
         }
 
