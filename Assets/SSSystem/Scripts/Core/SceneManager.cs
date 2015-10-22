@@ -90,6 +90,7 @@ namespace SS
         {
             if (clearAll)
             {
+                ClearCommands();
                 AddCommand(sceneName, new SceneData(SceneType.SCENE_CLEAR_ALL, ScenePosition, data, false, 0, true));
                 m_SceneTransition.LoadScene(sceneName, clearAll);
             }
@@ -122,7 +123,7 @@ namespace SS
             if (clearAll)
             {
                 HideAll();
-                Clear();
+                ClearScenes();
                 Application.LoadLevel(sceneName);
             }
             else
@@ -356,10 +357,14 @@ namespace SS
             }
         }
 
-        static void Clear()
+        static void ClearCommands()
+        {
+            m_Command.Clear();
+        }
+
+        static void ClearScenes()
         {
             m_Scenes.Clear();
-            m_Command.Clear();
             m_Stack.Clear();
         }
 
