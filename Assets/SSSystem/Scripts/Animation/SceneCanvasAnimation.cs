@@ -38,13 +38,16 @@ namespace SS
 
         void Awake()
         {
-            if (SceneManager.SceneAnimationTime > 0)
+            if (Application.isPlaying)
             {
-                m_AnimationTime = SceneManager.SceneAnimationTime;
-            }
-            else
-            {
-                m_AnimationTime = 0.283f;
+                if (SceneManager.SceneAnimationTime > 0)
+                {
+                    m_AnimationTime = SceneManager.SceneAnimationTime;
+                }
+                else
+                {
+                    m_AnimationTime = 0.283f;
+                }
             }
         }
 
@@ -150,19 +153,22 @@ namespace SS
 
         void UpdateByTime()
         {
-            switch (m_State)
+            if (Application.isPlaying)
             {
-                case State.SHOW:
-                case State.HIDE:
-                    float time = Time.realtimeSinceStartup - m_StartTime;
-                    RectTransform.anchoredPosition = Vector2.Lerp(m_Start, m_End, time / m_AnimationTime);
+                switch (m_State)
+                {
+                    case State.SHOW:
+                    case State.HIDE:
+                        float time = Time.realtimeSinceStartup - m_StartTime;
+                        RectTransform.anchoredPosition = Vector2.Lerp(m_Start, m_End, time / m_AnimationTime);
 
-                    if (time >= m_AnimationTime)
-                    {
-                        OnEndAnimation();
-                        m_State = State.IDLE;
-                    }
-                    break;
+                        if (time >= m_AnimationTime)
+                        {
+                            OnEndAnimation();
+                            m_State = State.IDLE;
+                        }
+                        break;
+                }
             }
         }
 

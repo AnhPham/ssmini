@@ -58,6 +58,7 @@ namespace SS
 
             Object sceneTransition = Resources.Load("SceneTransition");
             m_SceneTransition = ((GameObject)GameObject.Instantiate(sceneTransition)).GetComponent<SceneTransition>();
+            m_SceneTransition.gameObject.name = "SceneTransition";
 
             GameObject sceneSupporter = new GameObject("SceneManagerSupporter");
             m_SceneSupporter = sceneSupporter.AddComponent<SceneManagerSupporter>();
