@@ -124,7 +124,11 @@ namespace SS
             {
                 HideAll();
                 ClearScenes();
+                #if UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4_6
                 Application.LoadLevel(sceneName);
+                #else
+                UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+                #endif
             }
             else
             {
@@ -134,7 +138,11 @@ namespace SS
                 }
                 else
                 {
+                    #if UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4_6
                     Application.LoadLevelAdditive(sceneName);
+                    #else
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+                    #endif
                 }
             }
         }
@@ -343,7 +351,11 @@ namespace SS
             if (controller == null)
             {
                 AddCommand(sceneName, new SceneData(sceneType, position, null, false, minDepth, false));
+                #if UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4_6
                 Application.LoadLevelAdditive(sceneName);
+                #else
+                UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+                #endif
             }
         }
 
@@ -380,7 +392,11 @@ namespace SS
             }
             else
             {
+                #if UNITY_5_2 || UNITY_5_1 || UNITY_5_0 || UNITY_4_6
                 Application.LoadLevelAdditive(sceneName);
+                #else
+                UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+                #endif
             }
         }
 

@@ -15,19 +15,20 @@ public class DemoGameController : Controller
     [SerializeField]
     Transform m_Target;
 
-    DemoGameData data = new DemoGameData();
+    [SerializeField]
     bool isDemoClear;
+
+    DemoGameData data = new DemoGameData();
 
     void Awake()
     {
-        isDemoClear = Application.loadedLevelName.Contains("Clear");
-
         SceneManager.ShieldColor = new Color(0, 0, 0, 0.8f);
         SceneManager.SceneFadeTime = 0.5f;
         SceneManager.SceneAnimationTime = 0.283f;
         SceneManager.LoadingSceneName = "DemoLoading";
         SceneManager.TabSceneName = "DemoTab";
         SceneManager.Tab(true);
+        SceneManager.RemoveAudioListener();
     }
 
     void OnDestroy()
