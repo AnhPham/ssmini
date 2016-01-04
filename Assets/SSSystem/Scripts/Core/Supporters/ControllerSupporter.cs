@@ -145,14 +145,12 @@ namespace SS
                     t.SetSiblingIndex(0);
                     t.localScale = Vector3.one;
 
-                    /*
                     RectTransform rt = t.GetComponent<RectTransform>();
                     rt.anchorMin = Vector2.zero;
                     rt.anchorMax = Vector2.one;
                     rt.pivot = new Vector2(0.5f, 0.5f);
-                    rt.anchoredPosition = Vector2.zero;
-                    rt.sizeDelta = Vector2.zero;
-                    */
+                    rt.anchoredPosition = new Vector2(-2, -2);
+                    rt.sizeDelta = new Vector2(-2, -2);
                 }
 
                 m_CreatedShields = true;
