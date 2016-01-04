@@ -134,9 +134,10 @@ namespace SS
             {
                 for (int i = 0; i < m_CanvasArray.Length; i++)
                 {
-                    GameObject g = new GameObject("Shield");
+                    GameObject g = Instantiate<GameObject>(Resources.Load<GameObject>("Shield"));
+                    g.name = "Shield";
 
-                    Image image = g.AddComponent<Image>();
+                    Image image = g.GetComponent<Image>();
                     image.color = SceneManager.ShieldColor;
 
                     Transform t = g.transform;
@@ -144,12 +145,14 @@ namespace SS
                     t.SetSiblingIndex(0);
                     t.localScale = Vector3.one;
 
+                    /*
                     RectTransform rt = t.GetComponent<RectTransform>();
                     rt.anchorMin = Vector2.zero;
                     rt.anchorMax = Vector2.one;
                     rt.pivot = new Vector2(0.5f, 0.5f);
                     rt.anchoredPosition = Vector2.zero;
                     rt.sizeDelta = Vector2.zero;
+                    */
                 }
 
                 m_CreatedShields = true;
