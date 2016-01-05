@@ -149,8 +149,8 @@ namespace SS
                     rt.anchorMin = Vector2.zero;
                     rt.anchorMax = Vector2.one;
                     rt.pivot = new Vector2(0.5f, 0.5f);
-                    rt.anchoredPosition = new Vector2(-2, -2);
-                    rt.sizeDelta = new Vector2(-2, -2);
+					rt.offsetMax = new Vector2 (2, 2);
+					rt.offsetMin = new Vector2 (-2, -2);
                 }
 
                 m_CreatedShields = true;
