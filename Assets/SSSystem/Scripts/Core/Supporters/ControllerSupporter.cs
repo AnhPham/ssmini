@@ -131,6 +131,17 @@ namespace SS
             ResortCanvasList(min);
         }
 
+        public void AssignCameraUI(Camera cameraUI)
+        {
+            for (int i = 0; i < m_CanvasArray.Length; i++)
+            {
+                if (m_CanvasArray[i] != null)
+                {
+                    m_CanvasArray[i].worldCamera = cameraUI;
+                }
+            }
+        }
+
         public void CreateShields()
         {
             if (!m_CreatedShields)
@@ -139,6 +150,7 @@ namespace SS
                 {
                     GameObject g = Instantiate<GameObject>(Resources.Load<GameObject>("Shield"));
                     g.name = "Shield";
+                    g.layer = LayerMask.NameToLayer("UI");
 
                     Image image = g.GetComponent<Image>();
                     image.color = SceneManager.ShieldColor;
@@ -147,6 +159,7 @@ namespace SS
                     t.SetParent(m_CanvasArray[i].transform);
                     t.SetSiblingIndex(0);
                     t.localScale = Vector3.one;
+                    t.localPosition = new Vector3(t.localPosition.x, t.localPosition.y, 0);
 
                     RectTransform rt = t.GetComponent<RectTransform>();
                     rt.anchorMin = Vector2.zero;
@@ -252,10 +265,7 @@ namespace SS
             canvasTempList.Clear();
             for (int i = 0; i < canvasArray.Length; i++)
             {
-                if (canvasArray[i].renderMode == RenderMode.ScreenSpaceOverlay)
-                {
-                    canvasTempList.Add(canvasArray[i]);
-                }
+                canvasTempList.Add(canvasArray[i]);
             }
 
             m_CanvasArray = canvasTempList.ToArray();

@@ -54,6 +54,7 @@ namespace SS
         static bool m_TabActive;
 
         static string m_CurrentSceneName;
+        static Camera m_CameraUI;
 
         static SceneManager()
         {
@@ -196,6 +197,14 @@ namespace SS
             set
             {
                 SetFixController(m_TabController, value, SceneType.TAB, TabPosition, 50);
+            }
+        }
+
+        public static Camera CameraUI
+        {
+            set
+            {
+                m_CameraUI = value;
             }
         }
 
@@ -482,6 +491,7 @@ namespace SS
             controller.Supporter.OnActive(sceneData.Data);
             controller.OnFocus(true);
             controller.Supporter.ResortDepth(sceneData.MinDepth);
+            controller.Supporter.AssignCameraUI(m_CameraUI);
             controller.Supporter.Show(sceneData.HasAnimation);
         }
 
