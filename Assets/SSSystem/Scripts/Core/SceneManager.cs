@@ -43,6 +43,8 @@ namespace SS
         static Dictionary<string, Controller> m_Scenes = new Dictionary<string, Controller>();
         static Dictionary<string, SceneData> m_Command = new Dictionary<string, SceneData>();
         static Stack<Controller> m_Stack = new Stack<Controller>();
+        static List<string> m_IgnorePrefixList = new List<string>();
+
         static SceneTransition m_SceneTransition;
         static SceneManagerSupporter m_SceneSupporter;
         static Controller m_CurrentSceneController;
@@ -91,8 +93,21 @@ namespace SS
             set;
         }
 
+        public static string ScenePrefix
+        {
+            get;
+            set;
+        }
+
+        public static void SetIgnorePrefixScenes(params string[] sceneNames)
+        {
+            m_IgnorePrefixList = new List<string>(sceneNames);
+        }
+
         public static void Scene(string sceneName, bool clearAll, Data data = null)
         {
+            sceneName = AddPrefixToSceneName(sceneName);
+
             if (clearAll)
             {
                 ClearCommands();
@@ -395,6 +410,8 @@ namespace SS
 
         static void AddView(string sceneName, SceneType sceneType, Vector3 position, int minDepth, bool hasAnimation = false, Data data = null)
         {
+            sceneName = AddPrefixToSceneName(sceneName);
+
             m_SceneTransition.ShieldOn();
 
             AddCommand(sceneName, new SceneData(sceneType, position, data, hasAnimation, minDepth, true));
@@ -411,6 +428,11 @@ namespace SS
                 UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
                 #endif
             }
+        }
+
+        static string AddPrefixToSceneName(string sceneName)
+        {
+            return m_IgnorePrefixList.Contains(sceneName) ? sceneName : ScenePrefix + sceneName;
         }
 
         static Vector3 ScenePosition
