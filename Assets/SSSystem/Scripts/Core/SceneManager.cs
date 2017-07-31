@@ -108,6 +108,11 @@ namespace SS
         {
             sceneName = AddPrefixToSceneName(sceneName);
 
+            LoadScene(sceneName, clearAll, data);
+        }
+
+        static void LoadScene(string sceneName, bool clearAll, Data data = null)
+        {
             if (clearAll)
             {
                 ClearCommands();
@@ -171,7 +176,7 @@ namespace SS
         {
             if (!string.IsNullOrEmpty(m_CurrentSceneName))
             {
-                Scene(m_CurrentSceneName, true, data);
+                LoadScene(m_CurrentSceneName, true, data);
             }
         }
 
