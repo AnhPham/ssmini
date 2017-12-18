@@ -16,7 +16,7 @@ namespace SS
 
         void Update()
         {
-            #if UNITY_EDITOR || UNITY_ANDROID
+            #if UNITY_EDITOR || UNITY_ANDROID || UNITY_STANDALONE
             UpdateInput();
             #endif
         }
