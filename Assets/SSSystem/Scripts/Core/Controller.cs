@@ -47,6 +47,10 @@ namespace SS
         {
         }
 
+        public virtual void OnReFocus()
+        {
+        }
+
         public virtual void OnShown()
         {
         }

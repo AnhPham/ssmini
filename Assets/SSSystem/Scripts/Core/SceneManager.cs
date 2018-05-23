@@ -617,6 +617,7 @@ namespace SS
             {
                 Controller topController = m_Stack.Peek();
                 topController.OnFocus(true);
+                topController.OnReFocus();
 
                 switch (controller.SceneData.SceneType)
                 {
