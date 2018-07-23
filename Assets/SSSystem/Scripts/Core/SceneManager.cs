@@ -379,6 +379,19 @@ namespace SS
             return m_SceneTransition.Active || m_LoadingActive;
         }
 
+        public static bool ContainScene(string sceneName)
+        {
+            foreach (var controller in m_Stack)
+            {
+                if (string.Compare(controller.SceneName(), sceneName) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         static void SetFixController(Controller controller, string sceneName, SceneType sceneType, Vector3 position, int minDepth)
         {
             if (controller == null)
