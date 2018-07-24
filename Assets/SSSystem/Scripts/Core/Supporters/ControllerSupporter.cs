@@ -265,7 +265,10 @@ namespace SS
             canvasTempList.Clear();
             for (int i = 0; i < canvasArray.Length; i++)
             {
-                canvasTempList.Add(canvasArray[i]);
+                if (canvasArray[i].GetComponent<UnmanagedCanvas>() == null)
+                {
+                    canvasTempList.Add(canvasArray[i]);
+                }
             }
 
             m_CanvasArray = canvasTempList.ToArray();

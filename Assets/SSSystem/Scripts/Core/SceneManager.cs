@@ -222,6 +222,11 @@ namespace SS
 
         public static Camera CameraUI
         {
+            get
+            {
+                return m_CameraUI;
+            }
+
             set
             {
                 m_CameraUI = value;
