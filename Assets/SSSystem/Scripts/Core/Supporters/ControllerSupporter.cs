@@ -131,6 +131,17 @@ namespace SS
             ResortCanvasList(min);
         }
 
+        public void SetupCanvases()
+        {
+            for (int i = 0; i < m_CanvasArray.Length; i++)
+            {
+                if (m_CanvasArray[i] != null)
+                {
+                    m_CanvasArray[i].GetComponent<CanvasScaler>().matchWidthOrHeight = SS.Utils.Screen.GetCanvasScalerMatch();
+                }
+            }
+        }
+
         public void AssignCameraUI(Camera cameraUI)
         {
             for (int i = 0; i < m_CanvasArray.Length; i++)

@@ -536,6 +536,7 @@ namespace SS
             controller.Supporter.OnActive(sceneData.Data);
             controller.OnFocus(true);
             controller.Supporter.ResortDepth(sceneData.MinDepth);
+            controller.Supporter.SetupCanvases();
             controller.Supporter.AssignCameraUI(m_CameraUI);
             controller.Supporter.Show(sceneData.HasAnimation);
         }
